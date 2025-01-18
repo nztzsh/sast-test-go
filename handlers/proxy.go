@@ -19,3 +19,7 @@ func Proxy(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
+
+func AnotherFunc() string {
+	return "AnotherFunc"
+}

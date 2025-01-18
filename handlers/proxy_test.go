@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestProxy(t *testing.T) {
@@ -60,4 +62,9 @@ func TestProxy(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestAnotherFunc(t *testing.T) {
+	out := AnotherFunc()
+	assert.Equal(t, "AnotherFunc", out)
 }
