@@ -1,25 +1,28 @@
-package handlers
+```go
+func GetWebsiteInfo(c *gin.Context) {
+    tld := c.Query("tld")
+    domain := c.Query("domain")
+    keyword := c.Query("keyword")
 
-import (
-	"fmt"
-	"net/http"
-)
+    // Construct the request URL
+    requestURL := fmt.Sprintf("https://example.com/api?%s%s%s", tld, domain, keyword)
 
-// Proxy is a handler that forwards requests to the Google search engine.
-func Proxy(w http.ResponseWriter, r *http.Request) {
+    // Make the HTTP GET request
+    resp, err := http.Get(requestURL)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to make request"})
+        return
+    }
+    defer resp.Body.Close()
 
-	_proxyBaseURL := "https://google"
+    // Read the response body
+    body, err := ioutil.ReadAll(resp.Body)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read response body"})
+        return
+    }
 
-	url := fmt.Sprintf(
-		"%s.%s/search?q=%s",
-		_proxyBaseURL,
-		r.URL.Query().Get("tld"),
-		r.URL.Query().Get("q"),
-	)
-
-	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+    // Return the response as JSON
+    c.Data(http.StatusOK, "application/json", body)
 }
-
-func AnotherFunc() string {
-	return "AnotherFunc"
-}
+```
