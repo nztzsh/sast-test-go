@@ -1,25 +1,20 @@
 package handlers
 
-import (
-	"fmt"
-	"net/http"
-)
+const allowedTLDs = []string{"com", "org", "net"}
 
-// Proxy is a handler that forwards requests to the Google search engine.
 func Proxy(w http.ResponseWriter, r *http.Request) {
-
-	_proxyBaseURL := "https://google"
-
-	url := fmt.Sprintf(
-		"%s.%s/search?q=%s",
-		_proxyBaseURL,
-		r.URL.Query().Get("tld"),
-		r.URL.Query().Get("q"),
-	)
-
-	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
-}
-
-func AnotherFunc() string {
-	return "AnotherFunc"
+	url := r.URL.Hostname()
+	tld := strings.Split(url, ".")[len(strings.Split(url, "."))-1]
+	isAllowed := false
+	for _, allowedTLD := range allowedTLDs {
+		if tld == allowedTLD {
+			isAllowed = true
+			break
+		}
+	}
+	if !isAllowed {
+		http.Error(w, "Forbidden TLD", http.StatusForbidden)
+		return
+	}
+	// existing code
 }
